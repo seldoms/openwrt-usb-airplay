@@ -1,0 +1,34 @@
+diff --git a/libmaru.c b/libmaru.c
+index c7212c3..3cb36c8 100644
+--- a/libmaru.c
++++ b/libmaru.c
+@@ -1129,7 +1129,10 @@ static bool init_stream_nolock(maru_context *ctx,
+    if (str->sync_fd < 0)
+       return false;
+ 
+-   if (perform_rate_request(ctx, str->stream_ep, desc->sample_rate, 1000000) != LIBMARU_SUCCESS)
++   /* This device advertises fixed 48 kHz without endpoint frequency control. */
++   if (ctx->conf->interface[str->stream_interface].altsetting[str->stream_altsetting].endpoint[0].extra_length >= 4 &&
++       (ctx->conf->interface[str->stream_interface].altsetting[str->stream_altsetting].endpoint[0].extra[3] & 1) &&
++       perform_rate_request(ctx, str->stream_ep, desc->sample_rate, 1000000) != LIBMARU_SUCCESS)
+       return false;
+ 
+    if (str->feedback_ep && !enqueue_feedback_transfer(ctx, str))
+@@ -1286,12 +1289,11 @@ static bool enumerate_streams(maru_context *ctx,
+    if (!enumerate_stream_interfaces(ctx, desc))
+       return false;
+ 
+-   if (libusb_kernel_driver_active(ctx->handle, ctrl_index))
+-   {
+-      if (libusb_detach_kernel_driver(ctx->handle, ctrl_index) < 0 ||
+-            libusb_claim_interface(ctx->handle, ctrl_index) < 0)
+-         return false;
+-   }
++   if (libusb_kernel_driver_active(ctx->handle, ctrl_index) == 1 &&
++       libusb_detach_kernel_driver(ctx->handle, ctrl_index) < 0)
++      return false;
++   if (libusb_claim_interface(ctx->handle, ctrl_index) < 0)
++      return false;
+ 
+    for (unsigned i = 0; i < ctx->num_streams; i++)
+    {
