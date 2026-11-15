@@ -115,7 +115,7 @@ sh build.sh
 
 构建在 ARM64 Alpine 容器里完成，生成 `dist/`。Shairport Sync 固定源码提交；Alpine 依赖尚未锁定内容摘要，构建结果不保证逐字节相同。
 
-> 构建会覆盖 `dist/`。本地已验证程序留档需要保留时，请先备份。仓库不提供预编译二进制。
+> 构建会覆盖 `dist/`。本地已验证程序留档需要保留时，请先备份。预编译实验包见 [Releases](https://github.com/seldoms/openwrt-usb-airplay/releases)。
 
 ### 3. 部署文件
 
@@ -184,7 +184,7 @@ logread | grep -E 'run.sh|shairport|USB audio'
 - 使用 **Classic AirPlay / AirPlay 1**，未实现 AirPlay 2 多房间功能。
 - AirPlay 本身有缓冲，用户实测存在少许延迟；不适合游戏或实时通话。
 - libmaru 是老代码，描述符边界检查、错误处理、资源清理与更多设备兼容性仍需改进。
-- 当前无自动安装器；需要理解部署路径、进程和依赖后再安装。
+- 发行压缩包提供安装/归档卸载脚本；不是原生 APK/IPK 包，不受包管理器跟踪。
 
 ## 📦 代码在哪儿
 
@@ -227,3 +227,9 @@ libmaru 源码及其修改遵循 **LGPL-2.1-or-later**，保留原始版权声�
 🎶 让闲着的接口，干点快乐的事。
 
 </div>
+
+## 📥 实验发行包
+
+到 [Releases](https://github.com/seldoms/openwrt-usb-airplay/releases) 下载 `openwrt-usb-airplay-0.1.0-aarch64-musl.tar.gz` 和 `SHA256SUMS`，先校验再解压。在满足上文硬件与 Avahi 前提的路由器上运行 `sh install.sh`。安装脚本会备份旧版本并保留音箱名称配置，再启用服务。`sh uninstall.sh` 停用并归档文件，不销毁配置。
+
+这是针对已验证设备的预发行包，含私有动态库、许可证与组件版本清单。`dependency-sources.tar.gz` 提供所带库的上游源码及 Alpine 打包配方；本项目完整源码见同版本源码归档。尚无原生 OpenWrt APK/IPK 或 GitHub Packages 软件源。

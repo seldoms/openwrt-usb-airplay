@@ -23,3 +23,8 @@
 - libmaru 需要显式 claim 控制接口；设备未声明采样率控制时不可强制 SET_CUR。
 - Shairport 二进制启用 Avahi 时，配置不能指定未编译的 tinysvcmdns，否则启动失败。
 - Shairport 和 USB 播放器必须成对监管，停止或异常时清理另一个，避免争抢接口。
+
+# 0.1.0 预发行准备
+
+- 首次源码已公开；用户要求发行版，已准备 ARM64 musl 离线安装包及依赖源码包，不是原生 APK/IPK。
+- 所带库版本与许可证在 COMPONENTS.json、licenses/；安装保留配置并备份，卸载归档。安装脚本未在生产路由器重新安装，避免中断已运行音响；ARM64 Alpine 容器已通过首次安装、覆盖安装保留名称、卸载归档；rc.common 用桩替代，真实 procd 先前实机验证，本轮未重复。
